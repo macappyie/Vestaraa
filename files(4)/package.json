@@ -1,9 +1,0 @@
-{
-  "name": "vestara-backend-lambdas",
-  "version": "2.0.0",
-  "private": true,
-  "dependencies": {
-    "@aws-sdk/client-rds-data": "^3.600.0",
-    "aws-jwt-verify": "^4.0.1"
-  }
-}

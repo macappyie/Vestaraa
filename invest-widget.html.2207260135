@@ -51,7 +51,7 @@
 (function () {
   // ---- CONFIG: edit these two lines ----
   var PUBLISHABLE_KEY = "pk_test_51TvjLHFHy5JtQd5gkSmQwYN0P8mAZnN6crS272pIJbxGiD5KY2TOh8sHTRUYGfZwNs8LTKNsRnMEakj2cqOvuim00lSzZNZfq";
-  var BACKEND_URL = "https://vestaraa.onrender.com";
+  var BACKEND_URL = "https://YOUR-BACKEND-URL.example.com"; // deploy server.js and put its URL here
   // ----------------------------------------
 
   var stripe = Stripe(PUBLISHABLE_KEY);

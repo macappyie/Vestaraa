@@ -1,0 +1,126 @@
+<!--
+  Vestara — Invest Now widget
+  Drop this <div id="vestara-invest-root"> + <script> block into any page
+  where you want an "Invest" button to open a real Stripe Checkout flow.
+
+  IMPORTANT:
+  - Only the PUBLISHABLE key goes here. Never put the secret key in this file.
+  - This calls YOUR backend (server.js in this same folder) which talks to
+    Stripe using the secret key. The backend must be deployed somewhere that
+    can run Node (Vercel, Render, Railway, etc.) — CloudFront only serves
+    static files, it can't run this backend itself.
+  - Replace BACKEND_URL below with wherever you deploy server.js.
+-->
+
+<style>
+  #vestara-invest-root .vi-btn {
+    background:#7c3aed; color:#fff; border:none; padding:10px 20px;
+    border-radius:8px; font-size:15px; font-weight:600; cursor:pointer;
+  }
+  #vestara-invest-root .vi-btn:hover { background:#6d28d9; }
+  .vi-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.5);
+    display:flex; align-items:center; justify-content:center; z-index:9999;
+  }
+  .vi-modal {
+    background:#fff; border-radius:14px; padding:28px; width:340px;
+    font-family:system-ui,-apple-system,sans-serif; box-shadow:0 20px 60px rgba(0,0,0,.3);
+  }
+  .vi-modal h3 { margin:0 0 4px; font-size:18px; }
+  .vi-modal p.deal { margin:0 0 18px; color:#666; font-size:13px; }
+  .vi-modal label { font-size:13px; font-weight:600; display:block; margin-bottom:6px; }
+  .vi-modal input {
+    width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px;
+    font-size:15px; box-sizing:border-box; margin-bottom:6px;
+  }
+  .vi-error { color:#dc2626; font-size:12px; min-height:16px; margin-bottom:10px; }
+  .vi-actions { display:flex; gap:10px; margin-top:8px; }
+  .vi-cancel {
+    flex:1; background:#f3f4f6; border:none; padding:10px; border-radius:8px; cursor:pointer;
+  }
+  .vi-confirm {
+    flex:1; background:#7c3aed; color:#fff; border:none; padding:10px; border-radius:8px;
+    cursor:pointer; font-weight:600;
+  }
+  .vi-confirm:disabled { opacity:.6; cursor:not-allowed; }
+</style>
+
+<div id="vestara-invest-root"></div>
+
+<script>
+(function () {
+  // ---- CONFIG: edit these two lines ----
+  var PUBLISHABLE_KEY = "pk_test_51TvjLHFHy5JtQd5gkSmQwYN0P8mAZnN6crS272pIJbxGiD5KY2TOh8sHTRUYGfZwNs8LTKNsRnMEakj2cqOvuim00lSzZNZfq";
+  var BACKEND_URL = "https://YOUR-BACKEND-URL.example.com"; // deploy server.js and put its URL here
+  // ----------------------------------------
+
+  var stripe = Stripe(PUBLISHABLE_KEY);
+
+  function openModal(dealName, minInvest) {
+    minInvest = minInvest || 100;
+    var overlay = document.createElement("div");
+    overlay.className = "vi-overlay";
+    overlay.innerHTML =
+      '<div class="vi-modal">' +
+        '<h3>Invest in ' + dealName + '</h3>' +
+        '<p class="deal">Minimum investment: \u00a3' + minInvest + '</p>' +
+        '<label for="vi-amount">Investment amount (\u00a3)</label>' +
+        '<input id="vi-amount" type="number" min="' + minInvest + '" step="10" placeholder="' + minInvest + '" />' +
+        '<div class="vi-error" id="vi-error"></div>' +
+        '<div class="vi-actions">' +
+          '<button class="vi-cancel" id="vi-cancel">Cancel</button>' +
+          '<button class="vi-confirm" id="vi-confirm">Continue to payment</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    overlay.querySelector("#vi-cancel").onclick = function () {
+      document.body.removeChild(overlay);
+    };
+
+    overlay.querySelector("#vi-confirm").onclick = function () {
+      var amountInput = overlay.querySelector("#vi-amount");
+      var errorEl = overlay.querySelector("#vi-error");
+      var amount = parseFloat(amountInput.value);
+      var confirmBtn = overlay.querySelector("#vi-confirm");
+
+      if (!amount || amount < minInvest) {
+        errorEl.textContent = "Minimum investment is \u00a3" + minInvest + ".";
+        return;
+      }
+      errorEl.textContent = "";
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = "Redirecting...";
+
+      fetch(BACKEND_URL + "/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          dealName: dealName,
+          amountGBP: amount
+        })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.id) {
+            return stripe.redirectToCheckout({ sessionId: data.id });
+          } else {
+            throw new Error(data.error || "Could not start checkout");
+          }
+        })
+        .catch(function (err) {
+          errorEl.textContent = err.message;
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "Continue to payment";
+        });
+    };
+  }
+
+  // Expose globally so "View AI analysis" / "Invest" buttons on the site can call it:
+  // e.g. <button onclick="vestaraInvest('Nine Elms Quarter', 100)">Invest</button>
+  window.vestaraInvest = openModal;
+})();
+</script>
+
+<!-- Stripe.js must be loaded once per page -->
+<script src="https://js.stripe.com/v3/"></script>

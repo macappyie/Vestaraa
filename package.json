@@ -1,10 +1,14 @@
 {
-  "name": "vestara-backend-lambdas",
+  "name": "vestara-backend",
   "version": "1.0.0",
-  "private": true,
+  "description": "Vestara Stripe Checkout backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.600.0",
-    "@aws-sdk/lib-dynamodb": "^3.600.0",
-    "aws-jwt-verify": "^4.0.1"
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "stripe": "^16.8.0"
   }
 }

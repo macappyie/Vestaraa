@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Vestara — investor-facing API additions: deal detail, invest, portfolio.
+  Deploy alongside your existing /deals endpoint and Cognito user pool.
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    Description: Aurora PostgreSQL connection string (postgres://user:pass@host:5432/db)
+    NoEcho: true
+  CognitoUserPoolArn:
+    Type: String
+    Description: ARN of the existing Vestara Cognito user pool (client id 5rel7shih3irellatp90mk2hoh)
+  VpcSubnetIds:
+    Type: CommaDelimitedList
+    Description: Private subnet IDs for Lambdas that reach Aurora
+  VpcSecurityGroupIds:
+    Type: CommaDelimitedList
+    Description: Security group(s) allowing Lambda -> Aurora on 5432
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    Environment:
+      Variables:
+        DATABASE_URL: !Ref DatabaseUrl
+    VpcConfig:
+      SubnetIds: !Ref VpcSubnetIds
+      SecurityGroupIds: !Ref VpcSecurityGroupIds
+
+Resources:
+  VestaraApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref CognitoUserPoolArn
+
+  GetDealDetailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getDealDetail.handler
+      CodeUri: lambda/
+      Events:
+        GetDeal:
+          Type: Api
+          Properties:
+            RestApiId: !Ref VestaraApi
+            Path: /deals/{id}
+            Method: GET
+            # public — no auth required to view a deal
+
+  CreateInvestmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: createInvestment.handler
+      CodeUri: lambda/
+      Events:
+        CreateInvestment:
+          Type: Api
+          Properties:
+            RestApiId: !Ref VestaraApi
+            Path: /investments
+            Method: POST
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+  GetPortfolioFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: getPortfolio.handler
+      CodeUri: lambda/
+      Events:
+        GetPortfolio:
+          Type: Api
+          Properties:
+            RestApiId: !Ref VestaraApi
+            Path: /portfolio
+            Method: GET
+            Auth:
+              Authorizer: CognitoAuthorizer
+
+Outputs:
+  ApiUrl:
+    Description: Base URL for the new endpoints
+    Value: !Sub "https://${VestaraApi}.execute-api.${AWS::Region}.amazonaws.com/prod"

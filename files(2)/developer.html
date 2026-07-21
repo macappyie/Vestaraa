@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer Portal — Vestara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12181F;
+    --ink-soft:#1B232D;
+    --ink-line: rgba(237,233,221,0.14);
+    --paper:#E7E2D3;
+    --paper-dim:#DCD6C4;
+    --paper-line: rgba(18,24,31,0.12);
+    --brass:#AD8A50;
+    --brass-bright:#C7A667;
+    --forest:#2F6F5E;
+    --forest-bright:#3F8C77;
+    --rust:#A6503D;
+    --ink-text:#EDE9DD;
+    --ink-text-dim:#9CA3AC;
+    --paper-text:#181510;
+    --paper-text-dim:#5A5648;
+    --radius-sm:6px;
+    --radius-md:14px;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--paper-text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  h1,h2,h3{font-family:var(--font-display); font-weight:500; margin:0;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--brass); display:inline-block;}
+  .btn{
+    font-family:var(--font-body);
+    font-weight:500;
+    font-size:14.5px;
+    padding:11px 20px;
+    border-radius:var(--radius-sm);
+    border:1px solid transparent;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--brass); color:#181209; border-color:var(--brass);}
+  .btn-primary:hover{background:var(--brass-bright); border-color:var(--brass-bright);}
+  .btn-ghost-dark{background:transparent; color:var(--ink-text); border-color:rgba(237,233,221,0.35);}
+  .btn-ghost-dark:hover{border-color:var(--ink-text); background:rgba(237,233,221,0.06);}
+  .btn-outline{background:transparent; color:var(--paper-text); border-color:var(--paper-line);}
+  .btn-outline:hover{border-color:var(--paper-text);}
+  .btn-sm{padding:8px 16px; font-size:13.5px;}
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,24,31,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--ink-line);
+  }
+  .nav-inner{
+    max-width:1180px; margin:0 auto; padding:0 32px;
+    height:72px; display:flex; align-items:center; justify-content:space-between;
+    color:var(--ink-text);
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-size:21px; font-weight:600;}
+  .logo .mark{width:26px; height:26px;}
+  .logo a{text-decoration:none; display:flex; align-items:center; gap:10px; color:var(--ink-text);}
+  .nav-cta{display:flex; align-items:center; gap:14px; font-size:14.5px; color:var(--ink-text-dim);}
+  .badge-dev{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.06em; text-transform:uppercase;
+    background:rgba(63,140,119,0.18); color:var(--forest-bright);
+    padding:5px 10px; border-radius:4px; border:1px solid rgba(63,140,119,0.4);
+  }
+
+  main{padding:56px 0 100px;}
+
+  .page-head{margin-bottom:44px;}
+  .page-head h1{font-size:34px; color:var(--paper-text);}
+  .page-head p{color:var(--paper-text-dim); font-size:15.5px; margin-top:8px;}
+
+  .tabs{display:flex; gap:0; margin-bottom:40px; border-bottom:1px solid var(--paper-line); flex-wrap:wrap;}
+  .tab-btn{
+    font-family:var(--font-body); font-size:14.5px; font-weight:500;
+    background:none; border:none; padding:14px 4px; margin-right:32px;
+    color:var(--paper-text-dim); cursor:pointer; position:relative; top:1px;
+    border-bottom:2px solid transparent;
+  }
+  .tab-btn.active{color:var(--paper-text); border-bottom-color:var(--brass);}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .summary-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:48px;}
+  .summary-card{
+    background:var(--ink); color:var(--ink-text);
+    border-radius:var(--radius-md);
+    padding:22px 24px;
+    border:1px solid var(--ink-line);
+  }
+  .summary-card .label{font-family:var(--font-mono); font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-text-dim);}
+  .summary-card .value{font-family:var(--font-display); font-size:28px; margin-top:8px; color:var(--ink-text);}
+  .summary-card .sub{font-size:12.5px; color:var(--ink-text-dim); margin-top:5px;}
+
+  .section-title{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px;}
+  .section-title h2{font-size:21px;}
+  .section-title .count{font-family:var(--font-mono); font-size:12.5px; color:var(--paper-text-dim);}
+
+  .item-row{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius-md);
+    padding:20px 24px;
+    margin-bottom:12px;
+    flex-wrap:wrap;
+  }
+  .item-row .info h3{font-size:17px; margin-bottom:4px;}
+  .item-row .info .meta{font-family:var(--font-mono); font-size:12px; color:var(--paper-text-dim); text-transform:uppercase; letter-spacing:0.03em;}
+  .item-row .actions{display:flex; gap:10px; align-items:center;}
+
+  .status-pill{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:0.04em; text-transform:uppercase;
+    padding:5px 11px; border-radius:20px; white-space:nowrap;
+  }
+  .status-approved{background:rgba(63,140,119,0.15); color:var(--forest);}
+  .status-pending{background:rgba(173,138,80,0.15); color:var(--brass);}
+
+  .empty-state{
+    background:var(--paper-dim);
+    border:1px dashed var(--paper-line);
+    border-radius:var(--radius-md);
+    padding:40px;
+    text-align:center;
+    color:var(--paper-text-dim);
+  }
+
+  .stub-note{
+    display:flex; align-items:flex-start; gap:10px;
+    background:rgba(173,138,80,0.08);
+    border:1px solid rgba(173,138,80,0.25);
+    border-radius:var(--radius-sm);
+    padding:12px 16px;
+    font-size:13px; color:var(--paper-text-dim);
+    margin-bottom:24px;
+  }
+  .stub-note b{color:var(--brass); font-weight:600;}
+
+  /* ---------- FORM ---------- */
+  .form-card{
+    background:#fff; border:1px solid var(--paper-line); border-radius:var(--radius-md);
+    padding:32px; max-width:720px;
+  }
+  .form-row{margin-bottom:20px;}
+  .form-row label{
+    display:block; font-family:var(--font-mono); font-size:11.5px; text-transform:uppercase;
+    letter-spacing:0.05em; color:var(--paper-text-dim); margin-bottom:8px;
+  }
+  .form-row input, .form-row select, .form-row textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--paper-line); border-radius:var(--radius-sm);
+    font-family:var(--font-body); font-size:14.5px; background:var(--paper); color:var(--paper-text);
+  }
+  .form-row textarea{resize:vertical; min-height:90px;}
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus{outline:none; border-color:var(--brass);}
+  .form-grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+
+  .upload-zone{
+    border:1.5px dashed var(--paper-line); border-radius:var(--radius-md);
+    padding:32px; text-align:center; color:var(--paper-text-dim);
+    background:var(--paper-dim); margin-bottom:16px; cursor:pointer;
+    transition:border-color .15s ease;
+  }
+  .upload-zone:hover{border-color:var(--brass);}
+  .upload-zone .upload-label{font-weight:500; color:var(--paper-text); margin-bottom:4px;}
+  .upload-zone .upload-sub{font-size:12.5px;}
+
+  .progress-slider-row{display:flex; align-items:center; gap:16px; margin-bottom:24px;}
+  .progress-slider-row input[type=range]{flex:1;}
+  .progress-slider-row .pct-display{font-family:var(--font-display); font-size:22px; min-width:60px; text-align:right;}
+  .progress-bar-track{height:8px; background:var(--paper-dim); border-radius:4px; overflow:hidden; margin-bottom:24px;}
+  .progress-bar-fill{height:100%; background:var(--forest); border-radius:4px; transition:width .2s ease;}
+
+  .loading, .error-box{color:var(--paper-text-dim); padding:20px 0;}
+  .error-box{color:var(--rust);}
+
+  .gate-screen{
+    min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:20px; padding:40px;
+  }
+  .gate-screen h1{font-size:30px;}
+  .gate-screen p{color:var(--paper-text-dim); max-width:420px;}
+
+  @media (max-width:860px){
+    .summary-grid{grid-template-columns:repeat(2,1fr);}
+    .item-row{flex-direction:column; align-items:flex-start;}
+    .form-grid-2{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo">
+      <a href="index.html">
+        <svg class="mark" viewBox="0 0 26 26" fill="none"><rect x="1" y="14" width="5" height="11" fill="#AD8A50"/><rect x="10.5" y="8" width="5" height="17" fill="#EDE9DD"/><rect x="20" y="1" width="5" height="24" fill="#AD8A50"/></svg>
+        Vestara
+      </a>
+      <span class="badge-dev">Developer</span>
+    </div>
+    <div class="nav-cta" id="navCta"></div>
+  </div>
+</header>
+
+<main class="wrap" id="mainContent" style="display:none;">
+  <div class="page-head">
+    <div class="eyebrow">Developer portal</div>
+    <h1>Manage your projects</h1>
+    <p>Create listings, upload documents, and keep investors updated on progress.</p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="label">My listings</div>
+      <div class="value" id="statMyListings">—</div>
+      <div class="sub">All projects you've submitted</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Live / approved</div>
+      <div class="value" id="statLive">—</div>
+      <div class="sub">Visible to investors</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Pending review</div>
+      <div class="value" id="statPending">—</div>
+      <div class="sub">Awaiting admin approval</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Total raised</div>
+      <div class="value" id="statRaised">—</div>
+      <div class="sub">Across your live projects</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="projects">My projects</button>
+    <button class="tab-btn" data-tab="create">Create listing</button>
+    <button class="tab-btn" data-tab="documents">Upload documents</button>
+    <button class="tab-btn" data-tab="progress">Publish progress</button>
+  </div>
+
+  <!-- MY PROJECTS -->
+  <div class="tab-panel active" id="panel-projects">
+    <div class="stub-note"><b>Showing all live deals, not just yours:</b> the API has no concept of "which developer owns which project" yet — that needs a <code>developer_id</code> field tied to your login before this can filter to just your listings.</div>
+    <div class="section-title">
+      <h2>Projects</h2>
+      <span class="count" id="projectsCount"></span>
+    </div>
+    <div id="projectsList"><div class="loading">Loading projects…</div></div>
+  </div>
+
+  <!-- CREATE LISTING -->
+  <div class="tab-panel" id="panel-create">
+    <div class="stub-note"><b>Not wired to a backend yet:</b> this form is ready to go, but submitting needs a <code>POST /developer/projects</code> endpoint that doesn't exist yet. Once added, this form can call it directly.</div>
+    <div class="form-card">
+      <div class="form-row">
+        <label>Project title</label>
+        <input type="text" placeholder="e.g. Ashwood Riverside Apartments">
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Location</label>
+          <input type="text" placeholder="e.g. Manchester, UK">
+        </div>
+        <div class="form-row">
+          <label>Property type</label>
+          <select>
+            <option>Residential</option>
+            <option>Mixed-use</option>
+            <option>Commercial</option>
+            <option>Industrial / logistics</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Funding goal (£)</label>
+          <input type="number" placeholder="e.g. 500000">
+        </div>
+        <div class="form-row">
+          <label>Term (years)</label>
+          <input type="number" placeholder="e.g. 5">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Estimated yield (%)</label>
+        <input type="number" step="0.1" placeholder="e.g. 8.4">
+      </div>
+      <div class="form-row">
+        <label>Project description</label>
+        <textarea placeholder="Describe the development, timeline, and investment case…"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Submitting is coming soon — this needs a POST /developer/projects endpoint. Once added, the listing will go straight into the admin approval queue.')">Submit for review</button>
+    </div>
+  </div>
+
+  <!-- UPLOAD DOCUMENTS -->
+  <div class="tab-panel" id="panel-documents">
+    <div class="stub-note"><b>Not wired to a backend yet:</b> these upload zones are ready, but need file storage (e.g. S3) plus a <code>POST /developer/projects/{id}/documents</code> endpoint before files actually go anywhere.</div>
+    <div class="section-title">
+      <h2>Upload plans, valuations, budgets &amp; timelines</h2>
+    </div>
+    <div class="form-card">
+      <div class="form-row">
+        <label>Select project</label>
+        <select id="docsProjectSelect"><option>Loading projects…</option></select>
+      </div>
+      <div class="upload-zone" onclick="alert('File upload is coming soon — needs S3 storage + an upload endpoint.')">
+        <div class="upload-label">Architectural plans</div>
+        <div class="upload-sub">PDF, DWG — click to upload</div>
+      </div>
+      <div class="upload-zone" onclick="alert('File upload is coming soon — needs S3 storage + an upload endpoint.')">
+        <div class="upload-label">Valuation report</div>
+        <div class="upload-sub">PDF — click to upload</div>
+      </div>
+      <div class="upload-zone" onclick="alert('File upload is coming soon — needs S3 storage + an upload endpoint.')">
+        <div class="upload-label">Budget breakdown</div>
+        <div class="upload-sub">XLSX, PDF — click to upload</div>
+      </div>
+      <div class="upload-zone" onclick="alert('File upload is coming soon — needs S3 storage + an upload endpoint.')">
+        <div class="upload-label">Delivery timeline</div>
+        <div class="upload-sub">PDF, image — click to upload</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLISH PROGRESS -->
+  <div class="tab-panel" id="panel-progress">
+    <div class="stub-note"><b>Not wired to a backend yet:</b> this needs a <code>POST /developer/projects/{id}/progress</code> endpoint so updates actually reach investors' dashboards instead of just sitting here.</div>
+    <div class="section-title">
+      <h2>Publish a construction update</h2>
+    </div>
+    <div class="form-card">
+      <div class="form-row">
+        <label>Select project</label>
+        <select id="progressProjectSelect"><option>Loading projects…</option></select>
+      </div>
+      <div class="form-row">
+        <label>Construction progress</label>
+        <div class="progress-slider-row">
+          <input type="range" min="0" max="100" value="30" id="progressSlider" oninput="document.getElementById('progressPct').textContent = this.value + '%'; document.getElementById('progressFill').style.width = this.value + '%';">
+          <div class="pct-display" id="progressPct">30%</div>
+        </div>
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:30%;"></div></div>
+      </div>
+      <div class="form-row">
+        <label>Update notes for investors</label>
+        <textarea placeholder="e.g. Foundation work complete, framing begins next week…"></textarea>
+      </div>
+      <div class="upload-zone" onclick="alert('Photo upload is coming soon — needs S3 storage + an upload endpoint.')">
+        <div class="upload-label">Site photos</div>
+        <div class="upload-sub">JPG, PNG — click to upload</div>
+      </div>
+      <button class="btn btn-primary" onclick="alert('Publishing is coming soon — this needs a POST /developer/projects/{id}/progress endpoint to actually reach investor dashboards.')">Publish update</button>
+    </div>
+  </div>
+</main>
+
+<div class="gate-screen" id="gateScreen" style="display:none;">
+  <div class="eyebrow" style="justify-content:center;">Developer portal</div>
+  <h1>Please sign in to continue</h1>
+  <p>You need a Vestara developer account to manage projects.</p>
+  <a class="btn btn-primary" href="index.html" id="gateSignInBtn">Go to sign in</a>
+</div>
+
+<script>
+  var COGNITO_DOMAIN    = "https://us-west-2xcbkylnie.auth.us-west-2.amazoncognito.com";
+  var COGNITO_CLIENT_ID = "5rel7shih3irellatp90mk2hoh";
+  var VESTARA_API_URL   = "https://ge2o0vbuo0.execute-api.us-west-2.amazonaws.com/deals";
+
+  function decodeJwt(token){
+    try{
+      var payload = token.split('.')[1];
+      return JSON.parse(atob(payload.replace(/-/g,'+').replace(/_/g,'/')));
+    } catch(e){ return null; }
+  }
+
+  function signOut(){
+    sessionStorage.removeItem('id_token');
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    var logoutUrl = COGNITO_DOMAIN + "/logout"
+      + "?client_id=" + encodeURIComponent(COGNITO_CLIENT_ID)
+      + "&logout_uri=" + encodeURIComponent(window.location.origin);
+    window.location.href = logoutUrl;
+  }
+
+  // ---------- TABS ----------
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  function renderProjects(deals){
+    var list = document.getElementById('projectsList');
+    var count = document.getElementById('projectsCount');
+    if (!deals || !deals.length){
+      list.innerHTML = '<div class="empty-state">No projects yet. Create your first listing above.</div>';
+      count.textContent = '';
+      return;
+    }
+    count.textContent = deals.length + ' total';
+    var html = '';
+    deals.forEach(function(deal){
+      var pillClass = 'status-approved';
+      var pillText = 'Live';
+      if (deal.status && deal.status.toLowerCase().indexOf('new') !== -1){
+        pillClass = 'status-pending';
+        pillText = 'Pending review';
+      }
+      html += '' +
+        '<div class="item-row">' +
+          '<div class="info">' +
+            '<h3>' + deal.title + '</h3>' +
+            '<div class="meta">' + deal.location + ' · ' + deal.property_type + '</div>' +
+          '</div>' +
+          '<div class="actions">' +
+            '<span class="status-pill ' + pillClass + '">' + pillText + '</span>' +
+            '<button class="btn btn-outline btn-sm" onclick="alert(\'Editing is coming soon — needs a PUT /developer/projects/{id} endpoint.\')">Edit</button>' +
+          '</div>' +
+        '</div>';
+    });
+    list.innerHTML = html;
+  }
+
+  function populateSelects(deals){
+    var opts = deals.map(function(d){ return '<option>' + d.title + '</option>'; }).join('');
+    document.getElementById('docsProjectSelect').innerHTML = opts || '<option>No projects yet</option>';
+    document.getElementById('progressProjectSelect').innerHTML = opts || '<option>No projects yet</option>';
+  }
+
+  function updateSummary(deals){
+    document.getElementById('statMyListings').textContent = deals.length;
+    var pending = deals.filter(function(d){ return d.status && d.status.toLowerCase().indexOf('new') !== -1; }).length;
+    var live = deals.length - pending;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statLive').textContent = live;
+    var totalRaised = deals.reduce(function(sum, d){ return sum + (parseFloat(d.funding_raised) || 0); }, 0);
+    document.getElementById('statRaised').textContent = '£' + totalRaised.toLocaleString('en-GB');
+  }
+
+  function loadData(){
+    fetch(VESTARA_API_URL)
+      .then(function(res){
+        if (!res.ok) throw new Error('API responded with ' + res.status);
+        return res.json();
+      })
+      .then(function(data){
+        var deals = (data && data.deals) || [];
+        updateSummary(deals);
+        renderProjects(deals);
+        populateSelects(deals);
+      })
+      .catch(function(err){
+        document.getElementById('projectsList').innerHTML = '<div class="error-box">Could not load project data right now. Please refresh in a moment.</div>';
+        console.warn('Vestara developer portal: deals fetch failed', err);
+      });
+  }
+
+  (function init(){
+    var idToken = sessionStorage.getItem('id_token');
+    if (!idToken){
+      document.getElementById('gateScreen').style.display = 'flex';
+      return;
+    }
+    var claims = decodeJwt(idToken);
+    var email = claims && claims.email ? claims.email : 'Developer';
+
+    // Role check: only users in the "Developers" Cognito group may view this portal.
+    var groups = (claims && claims['cognito:groups']) || [];
+    if (groups.indexOf('Developers') === -1){
+      document.getElementById('gateScreen').style.display = 'flex';
+      document.querySelector('#gateScreen h1').textContent = 'Access denied';
+      document.querySelector('#gateScreen p').textContent =
+        'Your account (' + email + ') is signed in but is not a member of the Developers group. Contact a platform admin if you believe this is a mistake.';
+      document.getElementById('gateSignInBtn').textContent = 'Sign out';
+      document.getElementById('gateSignInBtn').removeAttribute('href');
+      document.getElementById('gateSignInBtn').addEventListener('click', function(e){
+        e.preventDefault();
+        signOut();
+      });
+      return;
+    }
+
+    document.getElementById('mainContent').style.display = 'block';
+
+    var navCta = document.getElementById('navCta');
+    navCta.innerHTML =
+      '<span style="color:var(--ink-text-dim); font-size:14.5px;">' + email + '</span>' +
+      '<a class="btn btn-ghost-dark" href="#" id="signOutBtn" style="padding:10px 20px; font-size:14px;">Sign out</a>';
+    document.getElementById('signOutBtn').addEventListener('click', function(e){
+      e.preventDefault();
+      signOut();
+    });
+
+    loadData();
+  })();
+</script>
+</body>
+</html>

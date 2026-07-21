@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal — Vestara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12181F;
+    --ink-soft:#1B232D;
+    --ink-line: rgba(237,233,221,0.14);
+    --paper:#E7E2D3;
+    --paper-dim:#DCD6C4;
+    --paper-line: rgba(18,24,31,0.12);
+    --brass:#AD8A50;
+    --brass-bright:#C7A667;
+    --forest:#2F6F5E;
+    --forest-bright:#3F8C77;
+    --rust:#A6503D;
+    --ink-text:#EDE9DD;
+    --ink-text-dim:#9CA3AC;
+    --paper-text:#181510;
+    --paper-text-dim:#5A5648;
+    --radius-sm:6px;
+    --radius-md:14px;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--paper-text); font-family:var(--font-body); line-height:1.5; -webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  h1,h2,h3{font-family:var(--font-display); font-weight:500; margin:0;}
+  .eyebrow{font-family:var(--font-mono); font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--brass); display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--brass); display:inline-block;}
+  .btn{font-family:var(--font-body); font-weight:500; font-size:15px; padding:12px 22px; border-radius:var(--radius-sm); border:1px solid transparent; cursor:pointer; display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:transform .15s ease, background .15s ease, border-color .15s ease;}
+  .btn:active{transform:scale(0.98);}
+  .btn:disabled{opacity:0.55; cursor:not-allowed;}
+  .btn-primary{background:var(--brass); color:#181209; border-color:var(--brass);}
+  .btn-primary:hover{background:var(--brass-bright); border-color:var(--brass-bright);}
+  .btn-block{width:100%; justify-content:center;}
+  .btn-ghost-dark{background:transparent; color:var(--ink-text); border-color:rgba(237,233,221,0.35);}
+  .btn-ghost-dark:hover{border-color:var(--ink-text); background:rgba(237,233,221,0.06);}
+  .btn-ghost-light{background:transparent; color:var(--paper-text); border-color:rgba(24,21,16,0.3); font-size:14px; padding:9px 16px;}
+  .btn-ghost-light:hover{border-color:var(--paper-text);}
+
+  header{position:sticky; top:0; z-index:50; background:rgba(18,24,31,0.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--ink-line);}
+  .nav-inner{max-width:1180px; margin:0 auto; padding:0 32px; height:72px; display:flex; align-items:center; justify-content:space-between; color:var(--ink-text);}
+  .logo{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-size:21px; font-weight:600;}
+  .logo .mark{width:26px; height:26px;}
+  .logo a{text-decoration:none; display:flex; align-items:center; gap:10px; color:var(--ink-text);}
+  .nav-cta{display:flex; align-items:center; gap:14px; font-size:14.5px; color:var(--ink-text-dim);}
+
+  main{padding:44px 0 100px;}
+  .back-link{font-family:var(--font-mono); font-size:12.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--paper-text-dim); text-decoration:none; display:inline-flex; gap:8px; align-items:center; margin-bottom:28px;}
+  .back-link:hover{color:var(--paper-text);}
+
+  .detail-layout{display:grid; grid-template-columns:1.55fr 1fr; gap:44px; align-items:start;}
+
+  .gallery-hero{position:relative; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--paper-line); margin-bottom:28px;}
+  .gallery-hero svg{width:100%; height:auto; display:block;}
+  .gallery-hero .badge-row{position:absolute; top:16px; left:16px; display:flex; gap:8px;}
+  .deal-badge{font-family:var(--font-mono); font-size:11.5px; padding:4px 9px; border-radius:20px; background:rgba(47,111,94,0.14); color:var(--forest); background-color:rgba(237,233,221,0.92);}
+  .deal-badge.risk{color:var(--rust);}
+  .funded-pill{position:absolute; top:16px; right:16px; font-family:var(--font-mono); font-size:11px; background:rgba(18,24,31,0.65); color:var(--ink-text); padding:5px 10px; border-radius:20px;}
+
+  .deal-heading .loc{font-family:var(--font-mono); font-size:12.5px; color:var(--paper-text-dim); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;}
+  .deal-heading h1{font-size:34px; margin-bottom:18px;}
+
+  .stat-strip{display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid var(--paper-line); border-radius:var(--radius-md); overflow:hidden; margin-bottom:36px; background:#fff;}
+  .stat-strip .cell{padding:18px 20px; border-right:1px solid var(--paper-line);}
+  .stat-strip .cell:last-child{border-right:none;}
+  .stat-strip .cell .k{font-size:11.5px; color:var(--paper-text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;}
+  .stat-strip .cell .v{font-family:var(--font-display); font-size:21px;}
+  .stat-strip .cell .v.yield{color:var(--forest);}
+
+  .progress-block{margin-bottom:44px;}
+  .progress-block .row{display:flex; justify-content:space-between; font-size:13.5px; color:var(--paper-text-dim); margin-bottom:8px;}
+  .progress-bar{height:8px; border-radius:4px; background:var(--paper-line); overflow:hidden;}
+  .progress-bar i{display:block; height:100%; background:var(--brass); border-radius:4px;}
+
+  .ai-analyst{background:var(--ink); color:var(--ink-text); border-radius:var(--radius-md); padding:36px; margin-bottom:36px;}
+  .ai-analyst .ai-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px;}
+  .ai-analyst h2{font-size:22px; color:var(--ink-text);}
+  .ai-analyst .ai-disclaimer{font-size:12px; color:var(--ink-text-dim); font-family:var(--font-mono);}
+  .ai-analyst .summary{font-size:15.5px; color:var(--ink-text-dim); line-height:1.7; margin-bottom:28px;}
+  .swot-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:28px;}
+  .swot-card{background:var(--ink-soft); border:1px solid var(--ink-line); border-radius:var(--radius-sm); padding:18px 20px;}
+  .swot-card .tag{font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; display:block;}
+  .swot-card.strengths .tag{color:var(--forest-bright);}
+  .swot-card.weaknesses .tag{color:var(--rust);}
+  .swot-card.opportunities .tag{color:var(--brass-bright);}
+  .swot-card.risks .tag{color:var(--rust);}
+  .swot-card ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--ink-text-dim); line-height:1.6;}
+  .swot-card li{margin-bottom:4px;}
+  .ai-subsection{margin-bottom:24px;}
+  .ai-subsection:last-child{margin-bottom:0;}
+  .ai-subsection h3{font-size:15px; color:var(--ink-text); margin-bottom:10px; font-family:var(--font-body); font-weight:500;}
+  .ai-subsection p, .ai-subsection ul{font-size:14px; color:var(--ink-text-dim); line-height:1.65; margin:0; padding-left:0;}
+  .ai-subsection ul{padding-left:18px;}
+  .exit-list{display:grid; gap:10px;}
+  .exit-item{display:flex; justify-content:space-between; background:var(--ink-soft); border:1px solid var(--ink-line); border-radius:var(--radius-sm); padding:12px 16px; font-size:13.5px;}
+  .exit-item .label{color:var(--ink-text);}
+  .exit-item .val{font-family:var(--font-mono); color:var(--forest-bright);}
+
+  .invest-panel{position:sticky; top:96px; background:#fff; border:1px solid var(--paper-line); border-radius:var(--radius-md); padding:28px;}
+  .invest-panel h3{font-size:19px; margin-bottom:4px;}
+  .invest-panel .sub{font-size:13.5px; color:var(--paper-text-dim); margin-bottom:22px;}
+  .amount-input-row{display:flex; align-items:center; border:1px solid var(--paper-line); border-radius:var(--radius-sm); padding:4px 14px; margin-bottom:14px; background:var(--paper);}
+  .amount-input-row .currency{font-family:var(--font-mono); font-size:18px; color:var(--paper-text-dim); margin-right:6px;}
+  .amount-input-row input{border:none; background:transparent; font-family:var(--font-display); font-size:24px; padding:10px 0; width:100%; outline:none; color:var(--paper-text);}
+  .chip-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+  .chip{font-family:var(--font-mono); font-size:12.5px; padding:7px 13px; border-radius:20px; border:1px solid var(--paper-line); background:#fff; cursor:pointer; color:var(--paper-text-dim);}
+  .chip:hover, .chip.active{border-color:var(--brass); color:var(--paper-text);}
+  .invest-note{font-size:12.5px; color:var(--paper-text-dim); margin-top:14px; line-height:1.55;}
+  .invest-error{font-size:13px; color:var(--rust); margin-top:10px; display:none;}
+
+  .loading, .error-box{color:var(--paper-text-dim); padding:20px 0;}
+  .error-box{color:var(--rust);}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(18,24,31,0.55); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff; border-radius:var(--radius-md); padding:32px; max-width:420px; width:100%;}
+  .modal-box h3{font-size:21px; margin-bottom:6px;}
+  .modal-box .sub{font-size:14px; color:var(--paper-text-dim); margin-bottom:22px;}
+  .modal-row{display:flex; justify-content:space-between; font-size:14.5px; padding:11px 0; border-bottom:1px solid var(--paper-line);}
+  .modal-row:last-of-type{border-bottom:none;}
+  .modal-actions{display:flex; gap:10px; margin-top:24px;}
+  .modal-actions .btn{flex:1;}
+  .modal-status{font-size:13.5px; margin-top:14px; text-align:center;}
+  .modal-status.success{color:var(--forest);}
+  .modal-status.error{color:var(--rust);}
+
+  @media (max-width:900px){
+    .detail-layout{grid-template-columns:1fr;}
+    .stat-strip{grid-template-columns:repeat(2,1fr);}
+    .swot-grid{grid-template-columns:1fr;}
+    .invest-panel{position:static;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo">
+      <a href="index.html">
+        <svg class="mark" viewBox="0 0 26 26" fill="none"><rect x="1" y="14" width="5" height="11" fill="#AD8A50"/><rect x="10.5" y="8" width="5" height="17" fill="#EDE9DD"/><rect x="20" y="1" width="5" height="24" fill="#AD8A50"/></svg>
+        Vestara
+      </a>
+    </div>
+    <div class="nav-cta" id="navCta"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <a class="back-link" href="index.html#deals">← Back to live deals</a>
+
+  <div id="dealContent" style="display:none;">
+    <div class="detail-layout">
+      <div>
+        <div class="gallery-hero">
+          <svg viewBox="0 0 800 340" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs><linearGradient id="skyD" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E9C98A"/><stop offset="100%" stop-color="#F2E3C2"/></linearGradient></defs>
+            <rect width="800" height="340" fill="url(#skyD)"/>
+            <circle cx="690" cy="70" r="36" fill="#F6D98F"/>
+            <rect x="0" y="262" width="800" height="78" fill="#8A9482"/>
+            <rect x="70" y="108" width="160" height="232" fill="#8A6F45"/>
+            <rect x="240" y="70" width="200" height="270" fill="#AD8A50"/>
+            <rect x="450" y="130" width="130" height="210" fill="#6E5738"/>
+            <rect x="590" y="92" width="170" height="248" fill="#8A6F45"/>
+          </svg>
+          <div class="badge-row"><span class="deal-badge" id="riskBadge">Low risk</span></div>
+          <span class="funded-pill" id="fundedPill">0% funded</span>
+        </div>
+
+        <div class="deal-heading">
+          <div class="loc" id="dealLoc">—</div>
+          <h1 id="dealTitle">Loading deal…</h1>
+        </div>
+
+        <div class="stat-strip">
+          <div class="cell"><div class="k">Est. yield</div><div class="v yield" id="statYield">—</div></div>
+          <div class="cell"><div class="k">Min. invest</div><div class="v" id="statMin">$100</div></div>
+          <div class="cell"><div class="k">Term</div><div class="v" id="statTerm">—</div></div>
+          <div class="cell"><div class="k">Property type</div><div class="v" id="statType">—</div></div>
+        </div>
+
+        <div class="progress-block">
+          <div class="row"><span id="raisedLabel">$0 raised</span><span id="goalLabel">of $0 goal</span></div>
+          <div class="progress-bar"><i id="progressFill" style="width:0%"></i></div>
+        </div>
+
+        <div class="ai-analyst">
+          <div class="ai-head">
+            <h2>AI Investment Analyst</h2>
+            <span class="ai-disclaimer">AI-generated · for information only, not financial advice</span>
+          </div>
+          <p class="summary" id="aiSummary">Generating summary…</p>
+
+          <div class="swot-grid">
+            <div class="swot-card strengths"><span class="tag">Strengths</span><ul id="swotStrengths"></ul></div>
+            <div class="swot-card weaknesses"><span class="tag">Weaknesses</span><ul id="swotWeaknesses"></ul></div>
+            <div class="swot-card opportunities"><span class="tag">Opportunities</span><ul id="swotOpportunities"></ul></div>
+            <div class="swot-card risks"><span class="tag">Threats</span><ul id="swotThreats"></ul></div>
+          </div>
+
+          <div class="ai-subsection">
+            <h3>Exit scenarios</h3>
+            <div class="exit-list" id="exitList"></div>
+          </div>
+
+          <div class="ai-subsection">
+            <h3>Local market trends</h3>
+            <p id="marketTrends"></p>
+          </div>
+
+          <div class="ai-subsection">
+            <h3>Key risks</h3>
+            <ul id="keyRisks"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="invest-panel">
+        <h3>Invest in this deal</h3>
+        <div class="sub" id="investSub">From $100 · funds move directly to escrow</div>
+        <div class="amount-input-row">
+          <span class="currency">$</span>
+          <input type="number" id="amountInput" min="100" step="50" value="500">
+        </div>
+        <div class="chip-row">
+          <span class="chip" data-amount="100">$100</span>
+          <span class="chip" data-amount="500">$500</span>
+          <span class="chip" data-amount="1000">$1,000</span>
+          <span class="chip" data-amount="5000">$5,000</span>
+        </div>
+        <button class="btn btn-primary btn-block" id="investBtn">Review investment</button>
+        <div class="invest-error" id="investError"></div>
+        <p class="invest-note">Estimated yield and exit scenarios are generated by Vestara's AI market models and are not a guarantee of return. All investments carry risk, including loss of capital.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" id="loadingState">Loading deal…</div>
+  <div class="error-box" id="errorState" style="display:none;">Could not load this deal. It may have closed or the link is out of date. <a href="index.html#deals">Browse live deals →</a></div>
+</main>
+
+<div class="modal-overlay" id="investModal">
+  <div class="modal-box">
+    <h3>Confirm your investment</h3>
+    <div class="sub" id="modalDealName">—</div>
+    <div class="modal-row"><span>Amount</span><span id="modalAmount">$0</span></div>
+    <div class="modal-row"><span>Est. yield</span><span id="modalYield">—</span></div>
+    <div class="modal-row"><span>Term</span><span id="modalTerm">—</span></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost-light" id="modalCancel">Cancel</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirm & invest</button>
+    </div>
+    <div class="modal-status" id="modalStatus"></div>
+  </div>
+</div>
+
+<script>
+  var COGNITO_DOMAIN    = "https://us-west-2xcbkylnie.auth.us-west-2.amazoncognito.com";
+  var COGNITO_CLIENT_ID = "5rel7shih3irellatp90mk2hoh";
+  var VESTARA_API_URL   = "https://ge2o0vbuo0.execute-api.us-west-2.amazonaws.com";
+
+  var dealId = new URLSearchParams(window.location.search).get('id') || 'rainey-fields';
+  var currentDeal = null;
+
+  // Fallback demo data — used if the /deals/{id} and /deals API calls
+  // aren't reachable yet (e.g. before that Lambda route is deployed).
+  var DEMO_DEALS = {
+    'rainey-fields': {
+      id: 'rainey-fields', title: 'Rainey Fields', location: '2400 E Cesar Chavez St, Austin, TX',
+      property_type: 'Mixed-use residential', est_yield: 8.4, term_years: 3,
+      funding_goal: 4200000, funding_raised: 3108000, risk_rating: 'Low risk'
+    },
+    'larimer-row': {
+      id: 'larimer-row', title: 'Larimer Row', location: '2900 Larimer St, Denver, CO',
+      property_type: 'Boutique retail + residential', est_yield: 7.1, term_years: 4,
+      funding_goal: 2600000, funding_raised: 1066000, risk_rating: 'Low risk'
+    },
+    'steele-creek-logistics': {
+      id: 'steele-creek-logistics', title: 'Steele Creek Logistics', location: '9500 Steele Creek Rd, Charlotte, NC',
+      property_type: 'Industrial / logistics', est_yield: 10.2, term_years: 5,
+      funding_goal: 5800000, funding_raised: 1044000, risk_rating: 'Watch'
+    }
+  };
+
+  function decodeJwt(token){
+    try{ return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }
+    catch(e){ return null; }
+  }
+  function getIdToken(){ return sessionStorage.getItem('id_token'); }
+  function getAccessToken(){ return sessionStorage.getItem('access_token'); }
+
+  function base64UrlEncode(buf){
+    var bytes = new Uint8Array(buf), str = "";
+    for (var i=0; i<bytes.byteLength; i++) str += String.fromCharCode(bytes[i]);
+    return btoa(str).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function randomString(len){
+    var arr = new Uint8Array(len);
+    crypto.getRandomValues(arr);
+    return base64UrlEncode(arr.buffer);
+  }
+  async function sha256(plain){
+    return await crypto.subtle.digest('SHA-256', new TextEncoder().encode(plain));
+  }
+  async function signIn(){
+    var codeVerifier = randomString(64);
+    sessionStorage.setItem('pkce_verifier', codeVerifier);
+    var codeChallenge = base64UrlEncode(await sha256(codeVerifier));
+    var url = COGNITO_DOMAIN + "/oauth2/authorize"
+      + "?client_id=" + encodeURIComponent(COGNITO_CLIENT_ID)
+      + "&response_type=code&scope=" + encodeURIComponent("phone openid email")
+      + "&redirect_uri=" + encodeURIComponent(window.location.href.split('?')[0] + '?id=' + encodeURIComponent(dealId))
+      + "&code_challenge_method=S256&code_challenge=" + codeChallenge;
+    window.location.href = url;
+  }
+  function signOut(){
+    sessionStorage.removeItem('id_token'); sessionStorage.removeItem('access_token'); sessionStorage.removeItem('refresh_token');
+    window.location.href = COGNITO_DOMAIN + "/logout?client_id=" + encodeURIComponent(COGNITO_CLIENT_ID) + "&logout_uri=" + encodeURIComponent(window.location.origin + '/index.html');
+  }
+
+  function renderNav(){
+    var idToken = getIdToken();
+    var navCta = document.getElementById('navCta');
+    if (idToken){
+      var claims = decodeJwt(idToken);
+      var email = claims && claims.email ? claims.email : 'Account';
+      navCta.innerHTML =
+        '<span style="color:var(--ink-text-dim); font-size:14.5px;">' + email + '</span>' +
+        '<a class="btn btn-ghost-dark" href="dashboard.html" style="padding:10px 20px; font-size:14px;">Dashboard</a>' +
+        '<a class="btn btn-primary" href="#" id="signOutBtn" style="padding:10px 20px; font-size:14px;">Sign out</a>';
+      document.getElementById('signOutBtn').addEventListener('click', function(e){ e.preventDefault(); signOut(); });
+    } else {
+      navCta.innerHTML =
+        '<a class="btn btn-ghost-dark" href="#" id="navSignIn" style="padding:10px 20px; font-size:14px;">Sign in</a>';
+      document.getElementById('navSignIn').addEventListener('click', function(e){ e.preventDefault(); signIn(); });
+    }
+  }
+
+  // ---- AI Investment Analyst content ----
+  // In production this block is generated by the AI Investment Analyst
+  // Lambda (Bedrock) and returned alongside the deal from GET /deals/{id}.
+  // Falls back to a deterministic mock built from the deal's own numbers
+  // so the page always has something sensible to show.
+  function buildAiAnalysis(deal){
+    if (deal.ai_analysis) return deal.ai_analysis;
+    var y = parseFloat(deal.est_yield);
+    return {
+      summary: deal.title + " is a " + deal.property_type.toLowerCase() + " development in " + deal.location.split(',').slice(-2).join(',').trim() +
+        ", targeting an estimated " + y.toFixed(1) + "% annual yield over a " + deal.term_years + "-year term. " +
+        "Funding is " + Math.round(100 * (deal.funding_raised / deal.funding_goal)) + "% complete, based on demand from the surrounding submarket and comparable recent developments.",
+      strengths: ["Strong comparable rents in the immediate submarket", "Experienced developer with a completed track record", "Pre-leasing interest ahead of schedule"],
+      weaknesses: ["Concentration in a single asset and single market", "Construction timeline carries some schedule risk"],
+      opportunities: ["Submarket rental demand trending upward", "Potential for early refinance to return capital sooner"],
+      threats: ["Rising interest rates could compress exit valuation", "Local supply pipeline may increase competition at delivery"],
+      exit_scenarios: [
+        {label: "Base case (on-schedule sale)", value: (y).toFixed(1) + "% IRR"},
+        {label: "Upside (early refinance)", value: (y + 1.8).toFixed(1) + "% IRR"},
+        {label: "Downside (12mo delay)", value: Math.max(0, y - 2.4).toFixed(1) + "% IRR"}
+      ],
+      market_trends: "Rental demand in this submarket has grown in recent quarters, supported by population and job growth. Planning activity nearby suggests continued investment in the area, though new supply is worth watching over the deal's term.",
+      key_risks: ["Construction cost overruns", "Interest rate movement affecting exit cap rate", "Slower-than-modeled lease-up"]
+    };
+  }
+
+  function renderDeal(deal){
+    currentDeal = deal;
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('dealContent').style.display = 'block';
+
+    document.title = deal.title + ' — Vestara';
+    document.getElementById('dealTitle').textContent = deal.title;
+    document.getElementById('dealLoc').textContent = deal.location.toUpperCase();
+    document.getElementById('statYield').textContent = parseFloat(deal.est_yield).toFixed(1) + '%';
+    document.getElementById('statTerm').textContent = deal.term_years + ' yrs';
+    document.getElementById('statType').textContent = deal.property_type;
+
+    var badge = document.getElementById('riskBadge');
+    badge.textContent = deal.risk_rating || 'Low risk';
+    if ((deal.risk_rating || '').toLowerCase().indexOf('watch') > -1) badge.classList.add('risk');
+
+    var goal = parseFloat(deal.funding_goal) || 0;
+    var raised = parseFloat(deal.funding_raised) || 0;
+    var pct = goal > 0 ? Math.round((raised / goal) * 100) : 0;
+    document.getElementById('fundedPill').textContent = pct + '% funded';
+    document.getElementById('raisedLabel').textContent = '$' + raised.toLocaleString() + ' raised';
+    document.getElementById('goalLabel').textContent = 'of $' + goal.toLocaleString() + ' goal';
+    document.getElementById('progressFill').style.width = pct + '%';
+
+    var ai = buildAiAnalysis(deal);
+    document.getElementById('aiSummary').textContent = ai.summary;
+    fillList('swotStrengths', ai.strengths);
+    fillList('swotWeaknesses', ai.weaknesses);
+    fillList('swotOpportunities', ai.opportunities);
+    fillList('swotThreats', ai.threats);
+    fillList('keyRisks', ai.key_risks);
+    document.getElementById('marketTrends').textContent = ai.market_trends;
+
+    var exitList = document.getElementById('exitList');
+    exitList.innerHTML = ai.exit_scenarios.map(function(e){
+      return '<div class="exit-item"><span class="label">' + e.label + '</span><span class="val">' + e.value + '</span></div>';
+    }).join('');
+
+    document.getElementById('modalDealName').textContent = deal.title;
+    document.getElementById('modalYield').textContent = parseFloat(deal.est_yield).toFixed(1) + '%';
+    document.getElementById('modalTerm').textContent = deal.term_years + ' yrs';
+  }
+
+  function fillList(id, items){
+    document.getElementById(id).innerHTML = (items || []).map(function(i){ return '<li>' + i + '</li>'; }).join('');
+  }
+
+  function loadDeal(){
+    fetch(VESTARA_API_URL + '/deals/' + encodeURIComponent(dealId))
+      .then(function(res){ if(!res.ok) throw new Error('not found'); return res.json(); })
+      .then(function(data){ renderDeal(data.deal || data); })
+      .catch(function(){
+        // fall back to the full list, then to embedded demo data
+        fetch(VESTARA_API_URL + '/deals')
+          .then(function(res){ return res.json(); })
+          .then(function(data){
+            var found = data && data.deals && data.deals.filter(function(d){ return d.id === dealId; })[0];
+            if (found) return renderDeal(found);
+            if (DEMO_DEALS[dealId]) return renderDeal(DEMO_DEALS[dealId]);
+            throw new Error('no deal');
+          })
+          .catch(function(){
+            if (DEMO_DEALS[dealId]) renderDeal(DEMO_DEALS[dealId]);
+            else {
+              document.getElementById('loadingState').style.display = 'none';
+              document.getElementById('errorState').style.display = 'block';
+            }
+          });
+      });
+  }
+
+  // ---- Invest flow ----
+  var amountInput = document.getElementById('amountInput');
+  document.querySelectorAll('.chip').forEach(function(chip){
+    chip.addEventListener('click', function(){
+      document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      amountInput.value = chip.dataset.amount;
+    });
+  });
+
+  var modal = document.getElementById('investModal');
+  document.getElementById('investBtn').addEventListener('click', function(){
+    var errBox = document.getElementById('investError');
+    var amt = parseFloat(amountInput.value);
+    if (!amt || amt < 100){
+      errBox.textContent = 'Minimum investment is $100.';
+      errBox.style.display = 'block';
+      return;
+    }
+    errBox.style.display = 'none';
+
+    if (!getIdToken()){
+      signIn();
+      return;
+    }
+    document.getElementById('modalAmount').textContent = '$' + amt.toLocaleString();
+    document.getElementById('modalStatus').textContent = '';
+    document.getElementById('modalConfirm').disabled = false;
+    modal.classList.add('open');
+  });
+  document.getElementById('modalCancel').addEventListener('click', function(){ modal.classList.remove('open'); });
+
+  document.getElementById('modalConfirm').addEventListener('click', function(){
+    var btn = this;
+    var status = document.getElementById('modalStatus');
+    var amt = parseFloat(amountInput.value);
+    btn.disabled = true;
+    status.className = 'modal-status';
+    status.textContent = 'Submitting…';
+
+    fetch(VESTARA_API_URL + '/investments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + getAccessToken()
+      },
+      body: JSON.stringify({ deal_id: currentDeal.id, amount: amt })
+    })
+      .then(function(res){ if (!res.ok) throw new Error('API responded ' + res.status); return res.json(); })
+      .then(function(){
+        status.className = 'modal-status success';
+        status.textContent = 'Investment confirmed. Redirecting to your portfolio…';
+        setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1400);
+      })
+      .catch(function(err){
+        status.className = 'modal-status error';
+        status.textContent = 'Could not process this investment right now. Please try again shortly.';
+        btn.disabled = false;
+        console.warn('Vestara invest error', err);
+      });
+  });
+
+  (async function initAuth(){
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get('code');
+    if (code){
+      var codeVerifier = sessionStorage.getItem('pkce_verifier');
+      try{
+        var body = new URLSearchParams({ grant_type: "authorization_code", client_id: COGNITO_CLIENT_ID, code: code, redirect_uri: window.location.href.split('?')[0] + '?id=' + encodeURIComponent(dealId), code_verifier: codeVerifier });
+        var res = await fetch(COGNITO_DOMAIN + "/oauth2/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() });
+        if (res.ok){
+          var tokens = await res.json();
+          sessionStorage.setItem('id_token', tokens.id_token);
+          sessionStorage.setItem('access_token', tokens.access_token);
+          if (tokens.refresh_token) sessionStorage.setItem('refresh_token', tokens.refresh_token);
+        }
+      } catch(e){ console.warn(e); }
+      window.history.replaceState({}, document.title, window.location.pathname + '?id=' + encodeURIComponent(dealId));
+    }
+    renderNav();
+  })();
+
+  loadDeal();
+</script>
+</body>
+</html>

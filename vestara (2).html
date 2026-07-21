@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vestara — Invest Smarter. Build Wealth Together.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12181F;
+    --ink-soft:#1B232D;
+    --ink-line: rgba(237,233,221,0.14);
+    --paper:#E7E2D3;
+    --paper-dim:#DCD6C4;
+    --paper-line: rgba(18,24,31,0.12);
+    --brass:#AD8A50;
+    --brass-bright:#C7A667;
+    --forest:#2F6F5E;
+    --forest-bright:#3F8C77;
+    --rust:#A6503D;
+    --ink-text:#EDE9DD;
+    --ink-text-dim:#9CA3AC;
+    --paper-text:#181510;
+    --paper-text-dim:#5A5648;
+    --radius-sm:6px;
+    --radius-md:14px;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--paper-text);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+  a{color:inherit;}
+  img,svg{display:block; max-width:100%;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  section{padding:96px 0;}
+  h1,h2,h3{font-family:var(--font-display); font-weight:500; margin:0;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--brass);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--brass); display:inline-block;}
+  .btn{
+    font-family:var(--font-body);
+    font-weight:500;
+    font-size:15px;
+    padding:14px 26px;
+    border-radius:var(--radius-sm);
+    border:1px solid transparent;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--brass); color:#181209; border-color:var(--brass);}
+  .btn-primary:hover{background:var(--brass-bright); border-color:var(--brass-bright);}
+  .btn-ghost-dark{background:transparent; color:var(--ink-text); border-color:rgba(237,233,221,0.35);}
+  .btn-ghost-dark:hover{border-color:var(--ink-text); background:rgba(237,233,221,0.06);}
+  .btn-ghost-light{background:transparent; color:var(--paper-text); border-color:rgba(24,21,16,0.3);}
+  .btn-ghost-light:hover{border-color:var(--paper-text);}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,24,31,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--ink-line);
+  }
+  .nav-inner{
+    max-width:1180px; margin:0 auto; padding:0 32px;
+    height:72px; display:flex; align-items:center; justify-content:space-between;
+    color:var(--ink-text);
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-size:21px; font-weight:600; letter-spacing:0.01em;}
+  .logo .mark{width:26px; height:26px;}
+  nav.links{display:flex; gap:34px; font-size:14.5px;}
+  nav.links a{text-decoration:none; color:var(--ink-text-dim); transition:color .15s ease;}
+  nav.links a:hover{color:var(--ink-text);}
+  .nav-cta{display:flex; align-items:center; gap:14px;}
+  .nav-signin{font-size:14.5px; color:var(--ink-text-dim); text-decoration:none;}
+  .nav-signin:hover{color:var(--ink-text);}
+  .nav-toggle{display:none; background:none; border:none; color:var(--ink-text); font-size:26px; cursor:pointer;}
+
+  /* ---------- TICKER ---------- */
+  .ticker-bar{
+    background:var(--ink-soft); border-bottom:1px solid var(--ink-line);
+    overflow:hidden; white-space:nowrap; padding:11px 0;
+  }
+  .ticker-track{display:inline-flex; animation:scroll-left 42s linear infinite;}
+  .ticker-track span{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--ink-text-dim);
+    padding:0 34px; border-right:1px solid var(--ink-line);
+  }
+  .ticker-track span b{color:var(--forest-bright); font-weight:500;}
+  @keyframes scroll-left{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--ink); color:var(--ink-text);
+    padding:88px 0 0 0;
+    position:relative; overflow:hidden;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center;
+    max-width:1180px; margin:0 auto; padding:0 32px 64px;
+  }
+  .hero h1{
+    font-size:clamp(38px,4.6vw,60px);
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    margin-bottom:24px;
+  }
+  .hero h1 em{font-style:italic; color:var(--brass-bright);}
+  .hero p.lede{
+    font-size:18px; color:var(--ink-text-dim); max-width:480px; margin-bottom:36px; line-height:1.6;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:52px;}
+  .hero-stats{display:flex; gap:36px; flex-wrap:wrap; border-top:1px solid var(--ink-line); padding-top:28px;}
+  .hero-stat b{display:block; font-family:var(--font-display); font-size:26px; font-weight:500; color:var(--ink-text);}
+  .hero-stat span{font-size:13px; color:var(--ink-text-dim);}
+  .blueprint-wrap{position:relative;}
+  .blueprint-wrap svg{width:100%; height:auto;}
+  .draw-line{
+    stroke-dasharray:1400; stroke-dashoffset:1400;
+    animation:draw 2.8s ease forwards;
+  }
+  .draw-line.d2{animation-delay:.25s;}
+  .draw-line.d3{animation-delay:.5s;}
+  .draw-line.d4{animation-delay:.75s;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head h2{font-size:clamp(28px,3.2vw,38px); letter-spacing:-0.01em; margin-bottom:16px;}
+  .section-head p{font-size:16.5px; color:var(--paper-text-dim); line-height:1.65;}
+  .on-dark .section-head p{color:var(--ink-text-dim);}
+
+  /* ---------- ROLES TABS ---------- */
+  .roles{background:var(--paper);}
+  .role-tabs{display:flex; gap:8px; margin-bottom:44px; flex-wrap:wrap; border-bottom:1px solid var(--paper-line);}
+  .role-tab{
+    font-family:var(--font-body); font-size:14.5px; font-weight:500;
+    background:none; border:none; padding:14px 4px; margin-right:32px;
+    color:var(--paper-text-dim); cursor:pointer; position:relative; top:1px;
+    border-bottom:2px solid transparent;
+  }
+  .role-tab.active{color:var(--paper-text); border-bottom-color:var(--brass);}
+  .role-panel{display:none;}
+  .role-panel.active{display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px; align-items:flex-start;}
+  .role-intro .role-num{font-family:var(--font-mono); font-size:13px; color:var(--brass); margin-bottom:10px; display:block;}
+  .role-intro h3{font-size:26px; margin-bottom:14px; line-height:1.2;}
+  .role-intro p{color:var(--paper-text-dim); font-size:15.5px; line-height:1.65;}
+  .role-list{display:grid; gap:0;}
+  .role-item{
+    display:flex; gap:16px; padding:20px 0; border-bottom:1px solid var(--paper-line);
+  }
+  .role-item:first-child{padding-top:0;}
+  .role-item .num{font-family:var(--font-mono); font-size:13px; color:var(--paper-text-dim); padding-top:2px; min-width:22px;}
+  .role-item h4{font-size:16px; font-weight:500; margin-bottom:4px; font-family:var(--font-body);}
+  .role-item p{font-size:14.5px; color:var(--paper-text-dim); margin:0; line-height:1.55;}
+
+  /* ---------- AI SUITE ---------- */
+  .ai-suite{background:var(--ink); color:var(--ink-text);}
+  .ai-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--ink-line); border:1px solid var(--ink-line);}
+  .ai-card{background:var(--ink); padding:38px;}
+  .ai-card .tag{font-family:var(--font-mono); font-size:12px; color:var(--brass-bright); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:16px; display:block;}
+  .ai-card h3{font-size:22px; margin-bottom:14px; font-weight:500;}
+  .ai-card ul{margin:0; padding:0; list-style:none;}
+  .ai-card li{
+    font-size:14.5px; color:var(--ink-text-dim); padding:9px 0 9px 20px; position:relative;
+    border-top:1px solid var(--ink-line);
+  }
+  .ai-card li:first-child{border-top:none;}
+  .ai-card li::before{content:"—"; position:absolute; left:0; color:var(--brass);}
+  .ai-card .sample{
+    margin-top:16px; font-family:var(--font-display); font-style:italic; font-size:15px;
+    color:var(--ink-text); background:var(--ink-soft); padding:14px 18px; border-radius:var(--radius-sm);
+    border-left:2px solid var(--forest-bright);
+  }
+
+  /* ---------- LEDGER / DEALS ---------- */
+  .ledger{background:var(--paper-dim);}
+  .deal-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .deal-card{
+    background:var(--paper); border:1px solid var(--paper-line); border-radius:var(--radius-md);
+    overflow:hidden; display:flex; flex-direction:column; gap:16px; padding-bottom:26px;
+    transition:transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, box-shadow .35s ease;
+  }
+  .deal-card:hover{transform:translateY(-6px); border-color:var(--brass); box-shadow:0 18px 34px rgba(18,24,31,0.14);}
+  .deal-panel{width:100%; height:150px; position:relative; background:var(--ink); display:block; overflow:hidden;}
+  .deal-panel .fig-label{font-family:var(--font-mono); font-size:9px; letter-spacing:0.08em;}
+  .deal-panel .gauge-num{font-family:var(--font-mono); font-weight:500;}
+  .deal-panel .gauge-cap{font-family:var(--font-mono); font-size:8px; letter-spacing:0.1em;}
+  .deal-panel .spark-line{fill:none; stroke-width:2; stroke-dasharray:340; stroke-dashoffset:340; transition:stroke-dashoffset 1.6s cubic-bezier(.16,1,.3,1);}
+  .deal-panel .spark-dot{transition:opacity .6s ease, r .6s ease; opacity:0;}
+  .deal-panel .gauge-ring{fill:none; stroke-width:5; stroke-linecap:round; transition:stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1);}
+  .deal-panel .scan-line{animation:scan 3.4s ease-in-out infinite;}
+  @keyframes scan{0%,100%{transform:translateY(0);} 50%{transform:translateY(112px);}}
+  .deal-panel .live-dot{animation:pulse 1.7s ease-in-out infinite; transform-origin:center;}
+  @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.3; transform:scale(0.7);}}
+  .deal-card .deal-body{padding:0 26px; display:flex; flex-direction:column; gap:16px;}
+  .deal-bar i{width:0; transition:width 1.5s cubic-bezier(.16,1,.3,1);}
+  .deal-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .deal-loc{font-size:12.5px; color:var(--paper-text-dim); font-family:var(--font-mono);}
+  .deal-name{font-family:var(--font-display); font-size:20px; margin:4px 0 0;}
+  .deal-badge{font-family:var(--font-mono); font-size:11.5px; padding:4px 9px; border-radius:20px; background:rgba(47,111,94,0.14); color:var(--forest);}
+  .deal-badge.risk{background:rgba(166,80,61,0.14); color:var(--rust);}
+  .deal-metrics{display:flex; gap:22px;}
+  .deal-metrics div span{display:block; font-size:12px; color:var(--paper-text-dim);}
+  .deal-metrics div b{font-family:var(--font-mono); font-size:17px; font-weight:500;}
+  .deal-bar{height:6px; border-radius:4px; background:var(--paper-line); overflow:hidden;}
+  .deal-bar i{display:block; height:100%; background:var(--brass);}
+  .deal-foot{display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--paper-text-dim);}
+  .deal-foot a{font-size:13.5px; font-weight:500; color:var(--forest); text-decoration:none;}
+  .deal-foot a:hover{text-decoration:underline;}
+
+  /* ---------- TRUST ---------- */
+  .trust{background:var(--ink); color:var(--ink-text);}
+  .trust-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--ink-line); border:1px solid var(--ink-line); border-radius:var(--radius-md); overflow:hidden;}
+  .trust-item{background:var(--ink); padding:28px 24px; text-align:left;}
+  .trust-item h4{font-size:14.5px; font-weight:500; margin-bottom:8px;}
+  .trust-item p{font-size:13px; color:var(--ink-text-dim); margin:0; line-height:1.55;}
+
+  /* ---------- PEOPLE ---------- */
+  .people{background:var(--paper-dim);}
+  .people-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
+  .people-card{background:var(--paper); border:1px solid var(--paper-line); border-radius:var(--radius-md); padding:28px;}
+  .people-quote{font-family:var(--font-display); font-style:italic; font-size:17px; line-height:1.5; margin-bottom:20px;}
+  .people-who{display:flex; align-items:center; gap:12px;}
+  .people-avatar{width:38px; height:38px; border-radius:50%; background:var(--brass); color:#181209; display:flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:14px; flex-shrink:0;}
+  .people-who b{display:block; font-size:14px; font-weight:500;}
+  .people-who span{display:block; font-size:12.5px; color:var(--paper-text-dim);}
+
+  /* ---------- CTA ---------- */
+  .cta{background:var(--paper);}
+  .cta-band{
+    background:var(--ink); color:var(--ink-text); border-radius:var(--radius-md);
+    padding:64px 56px; display:grid; grid-template-columns:1.3fr 1fr; gap:40px; align-items:center;
+  }
+  .cta-band h2{font-size:32px; margin-bottom:14px; line-height:1.15;}
+  .cta-band p{color:var(--ink-text-dim); font-size:15.5px; max-width:440px;}
+  .cta-paths{display:flex; flex-direction:column; gap:12px;}
+  .cta-path{
+    display:flex; justify-content:space-between; align-items:center;
+    border:1px solid rgba(237,233,221,0.2); border-radius:var(--radius-sm); padding:18px 22px;
+    text-decoration:none; color:var(--ink-text); transition:border-color .15s ease, background .15s ease;
+  }
+  .cta-path:hover{border-color:var(--brass); background:rgba(237,233,221,0.04);}
+  .cta-path b{font-size:15px; font-weight:500;}
+  .cta-path span{display:block; font-size:12.5px; color:var(--ink-text-dim); margin-top:2px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--ink); color:var(--ink-text-dim); border-top:1px solid var(--ink-line); padding:48px 0 32px;}
+  .foot-top{display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; margin-bottom:36px;}
+  .foot-cols{display:flex; gap:64px; flex-wrap:wrap;}
+  .foot-col h5{font-size:12.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-text); margin:0 0 14px; font-weight:500;}
+  .foot-col a{display:block; font-size:14px; color:var(--ink-text-dim); text-decoration:none; margin-bottom:10px;}
+  .foot-col a:hover{color:var(--ink-text);}
+  .foot-bottom{display:flex; justify-content:space-between; border-top:1px solid var(--ink-line); padding-top:24px; font-size:12.5px; flex-wrap:wrap; gap:12px;}
+
+  @media (max-width:860px){
+    section{padding:64px 0;}
+    .hero-grid{grid-template-columns:1fr; padding-bottom:40px;}
+    .blueprint-wrap{order:-1; max-width:340px; margin:0 auto 32px;}
+    .role-panel.active{grid-template-columns:1fr; gap:28px;}
+    .ai-grid{grid-template-columns:1fr;}
+    .deal-grid{grid-template-columns:1fr;}
+    .trust-grid{grid-template-columns:repeat(2,1fr);}
+    .cta-band{grid-template-columns:1fr; padding:40px 28px;}
+    nav.links{display:none;}
+    .nav-toggle{display:block;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="logo">
+      <svg class="mark" viewBox="0 0 26 26" fill="none"><rect x="1" y="14" width="5" height="11" fill="#AD8A50"/><rect x="10.5" y="8" width="5" height="17" fill="#EDE9DD"/><rect x="20" y="1" width="5" height="24" fill="#AD8A50"/></svg>
+      Vestara
+    </div>
+    <nav class="links">
+      <a href="#investors">Investors</a>
+      <a href="#developers">Developers</a>
+      <a href="#ai-suite">AI suite</a>
+      <a href="#deals">Live deals</a>
+      <a href="#trust">Trust & compliance</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="nav-signin" href="#">Sign in</a>
+      <a class="btn btn-primary" href="#deals" style="padding:10px 20px; font-size:14px;">Get started</a>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">US property investing, rebuilt around AI</div>
+      <h1>Invest smarter.<br>Build wealth <em>together</em>.</h1>
+      <p class="lede">Vestara opens vetted property developments to everyday investors from $100 — with an AI analyst reading every deal, every risk, and every market shift alongside you.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#deals">Browse live projects</a>
+        <a class="btn btn-ghost-dark" href="#developers">List a development</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>$100</b><span>minimum investment</span></div>
+        <div class="hero-stat"><b>100%</b><span>of listings AI-reviewed</span></div>
+        <div class="hero-stat"><b>24/7</b><span>portfolio monitoring</span></div>
+      </div>
+    </div>
+    <div class="blueprint-wrap">
+      <svg viewBox="0 0 460 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="460" height="460" fill="none"/>
+        <g opacity="0.18" stroke="#EDE9DD" stroke-width="0.6">
+          <line x1="0" y1="46" x2="460" y2="46"/><line x1="0" y1="92" x2="460" y2="92"/>
+          <line x1="0" y1="138" x2="460" y2="138"/><line x1="0" y1="184" x2="460" y2="184"/>
+          <line x1="0" y1="230" x2="460" y2="230"/><line x1="0" y1="276" x2="460" y2="276"/>
+          <line x1="0" y1="322" x2="460" y2="322"/><line x1="0" y1="368" x2="460" y2="368"/>
+          <line x1="0" y1="414" x2="460" y2="414"/>
+          <line x1="46" y1="0" x2="46" y2="460"/><line x1="92" y1="0" x2="92" y2="460"/>
+          <line x1="138" y1="0" x2="138" y2="460"/><line x1="184" y1="0" x2="184" y2="460"/>
+          <line x1="230" y1="0" x2="230" y2="460"/><line x1="276" y1="0" x2="276" y2="460"/>
+          <line x1="322" y1="0" x2="322" y2="460"/><line x1="368" y1="0" x2="368" y2="460"/>
+          <line x1="414" y1="0" x2="414" y2="460"/>
+        </g>
+        <polyline class="draw-line" points="60,420 60,180 130,120 130,420" stroke="#9CA3AC" stroke-width="2" stroke-linejoin="round"/>
+        <polyline class="draw-line d2" points="150,420 150,60 320,60 320,420" stroke="#EDE9DD" stroke-width="2.4" stroke-linejoin="round"/>
+        <g class="draw-line d3" stroke="#C7A667" stroke-width="1.6">
+          <line x1="150" y1="120" x2="320" y2="120"/><line x1="150" y1="180" x2="320" y2="180"/>
+          <line x1="150" y1="240" x2="320" y2="240"/><line x1="150" y1="300" x2="320" y2="300"/>
+          <line x1="150" y1="360" x2="320" y2="360"/>
+          <line x1="195" y1="60" x2="195" y2="420"/><line x1="240" y1="60" x2="240" y2="420"/><line x1="280" y1="60" x2="280" y2="420"/>
+        </g>
+        <polyline class="draw-line d4" points="340,420 340,150 400,150 400,420" stroke="#3F8C77" stroke-width="2" stroke-linejoin="round"/>
+        <line x1="20" y1="420" x2="440" y2="420" stroke="#9CA3AC" stroke-width="1.4"/>
+        <text x="150" y="45" fill="#9CA3AC" font-family="IBM Plex Mono" font-size="11">FIG. 03 — MIXED-USE DEVELOPMENT</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="roles" id="how-it-works">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>One ledger, three roles</h2>
+      <p>Investors, developers, and admins each get a workspace built for exactly what they need to do — with the AI suite working quietly underneath all three.</p>
+    </div>
+
+    <div class="role-tabs">
+      <button class="role-tab active" data-role="investors">Investors</button>
+      <button class="role-tab" data-role="developers">Developers</button>
+      <button class="role-tab" data-role="admins">Admins</button>
+    </div>
+
+    <div class="role-panel active" id="panel-investors">
+      <div class="role-intro">
+        <span class="role-num">01</span>
+        <h3>Put capital to work from $100</h3>
+        <p>No property expertise required. Verify your identity once, then browse, invest, and track every project from a single dashboard — with an AI analyst explaining what you're actually buying into.</p>
+      </div>
+      <div class="role-list">
+        <div class="role-item"><span class="num">1</span><div><h4>Sign up and verify identity</h4><p>Bank-grade KYC/AML checks, done once, in minutes.</p></div></div>
+        <div class="role-item"><span class="num">2</span><div><h4>Browse vetted projects</h4><p>Every listing has passed admin compliance review before it's public.</p></div></div>
+        <div class="role-item"><span class="num">3</span><div><h4>Read the AI-generated summary</h4><p>Plain-English breakdown of the deal, the SWOT, and the numbers.</p></div></div>
+        <div class="role-item"><span class="num">4</span><div><h4>Invest from $100</h4><p>Fund a stake in a single development or spread it across several.</p></div></div>
+        <div class="role-item"><span class="num">5</span><div><h4>Track returns and updates</h4><p>Construction milestones, valuations, and distributions in one feed.</p></div></div>
+      </div>
+    </div>
+
+    <div class="role-panel" id="panel-developers">
+      <div class="role-intro">
+        <span class="role-num">02</span>
+        <h3>Raise capital without the roadshow</h3>
+        <p>Publish a project once and let Vestara route it to a pool of ready investors. Update everyone at once, automatically, as construction moves forward.</p>
+      </div>
+      <div class="role-list">
+        <div class="role-item"><span class="num">1</span><div><h4>Create a project listing</h4><p>Guided setup — the AI assistant drafts the listing copy from your inputs.</p></div></div>
+        <div class="role-item"><span class="num">2</span><div><h4>Upload plans and financials</h4><p>Architectural plans, valuations, budgets, and delivery timeline in one place.</p></div></div>
+        <div class="role-item"><span class="num">3</span><div><h4>Submit for compliance review</h4><p>Admins check the package before it ever reaches an investor.</p></div></div>
+        <div class="role-item"><span class="num">4</span><div><h4>Publish construction progress</h4><p>Photos, milestones, and cost updates flow straight to your investor base.</p></div></div>
+        <div class="role-item"><span class="num">5</span><div><h4>Generate investor updates</h4><p>The AI drafts your monthly update from your latest project data.</p></div></div>
+      </div>
+    </div>
+
+    <div class="role-panel" id="panel-admins">
+      <div class="role-intro">
+        <span class="role-num">03</span>
+        <h3>Keep the marketplace trustworthy</h3>
+        <p>Every project and every investor passes through admin review. Vestara gives your compliance team the tools to move fast without cutting corners.</p>
+      </div>
+      <div class="role-list">
+        <div class="role-item"><span class="num">1</span><div><h4>Approve projects</h4><p>Review a development before it's visible to a single investor.</p></div></div>
+        <div class="role-item"><span class="num">2</span><div><h4>Review compliance</h4><p>Checklist-driven review of identity, disclosures, and legal documents.</p></div></div>
+        <div class="role-item"><span class="num">3</span><div><h4>Monitor investments</h4><p>Platform-wide visibility into exposure, flows, and flagged activity.</p></div></div>
+        <div class="role-item"><span class="num">4</span><div><h4>Generate reports</h4><p>Regulatory and internal reporting, exportable on demand.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ai-suite on-dark" id="ai-suite">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The AI suite</div>
+      <h2>Four AI systems, working the whole time you're not looking</h2>
+      <p>Most platforms stop thinking about a deal the moment you invest. Vestara reads every deal, every portfolio, and every market signal continuously — before you invest and long after.</p>
+    </div>
+    <div class="ai-grid">
+      <div class="ai-card">
+        <span class="tag">For investors</span>
+        <h3>AI investment analyst</h3>
+        <ul>
+          <li>Plain-English investment summary</li>
+          <li>Automated SWOT analysis</li>
+          <li>Estimated rental yield</li>
+          <li>Exit scenario modelling</li>
+          <li>Local market trend read-out</li>
+          <li>Key risks, surfaced up front</li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <span class="tag">For investors</span>
+        <h3>AI portfolio advisor</h3>
+        <ul>
+          <li>Flags concentration risk across your holdings</li>
+          <li>Suggests diversifying deals as they list</li>
+          <li>Rebalancing guidance as your portfolio grows</li>
+        </ul>
+        <div class="sample">"You have too much exposure to London apartments."</div>
+        <div class="sample">"Adding this industrial project would diversify your portfolio."</div>
+      </div>
+      <div class="ai-card">
+        <span class="tag">For developers</span>
+        <h3>AI developer assistant</h3>
+        <ul>
+          <li>Drafts new project listings from your source documents</li>
+          <li>Generates investor updates automatically</li>
+          <li>Forecasts project cash flow</li>
+          <li>Flags budget risk before it becomes a shortfall</li>
+        </ul>
+      </div>
+      <div class="ai-card">
+        <span class="tag">Platform-wide</span>
+        <h3>AI market intelligence</h3>
+        <ul>
+          <li>Continuously tracks house prices and rental demand</li>
+          <li>Monitors interest rates and planning applications</li>
+          <li>Reads economic indicators that move property value</li>
+          <li>Feeds every summary, forecast, and alert above</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ledger" id="deals">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Live deal ledger</div>
+      <h2>Projects open for investment</h2>
+      <p>A sample of what an investor sees the moment they sign in. Every card carries the AI analyst's read before you commit a dollar.</p>
+    </div>
+    <div class="deal-grid">
+      <div class="deal-card">
+        <svg class="deal-panel" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="150" fill="#12181F"/>
+          <g stroke="#EDE9DD" stroke-width="0.5" opacity="0.08">
+            <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="50" x2="400" y2="50"/>
+            <line x1="0" y1="80" x2="400" y2="80"/><line x1="0" y1="110" x2="400" y2="110"/>
+            <line x1="0" y1="140" x2="400" y2="140"/>
+            <line x1="230" y1="0" x2="230" y2="150"/>
+          </g>
+          <rect class="scan-line" x="0" y="18" width="400" height="1" fill="#C7A667" opacity="0.35"/>
+          <text x="18" y="26" class="fig-label" fill="#9CA3AC">FIG.01 — CASH FLOW FORECAST</text>
+          <polyline class="spark-line" points="18,112 58,100 98,104 138,84 178,90 218,58" stroke="#C7A667"/>
+          <circle class="spark-dot" cx="218" cy="58" r="3.5" fill="#C7A667"/>
+          <line x1="230" y1="0" x2="230" y2="150" stroke="#EDE9DD" opacity="0.12"/>
+          <circle cx="315" cy="80" r="38" fill="none" stroke="#EDE9DD" stroke-opacity="0.12" stroke-width="5"/>
+          <circle class="gauge-ring" data-pct="56" cx="315" cy="80" r="38" stroke="#C7A667" stroke-dasharray="238.8" stroke-dashoffset="238.8" transform="rotate(-90 315 80)"/>
+          <text x="315" y="78" text-anchor="middle" class="gauge-num count-num" data-target="8.4" data-decimals="1" data-suffix="%" fill="#EDE9DD" font-size="19">0%</text>
+          <text x="315" y="94" text-anchor="middle" class="gauge-cap" fill="#9CA3AC">EST. YIELD</text>
+          <circle class="live-dot" cx="380" cy="20" r="4" fill="#3F8C77"/>
+          <text x="371" y="24" text-anchor="end" class="fig-label" fill="#3F8C77">FUNDING</text>
+        </svg>
+        <div class="deal-body">
+          <div class="deal-top">
+            <div><div class="deal-loc">AUSTIN, TX · MIXED-USE</div><div class="deal-name">Rainey Fields</div></div>
+            <span class="deal-badge">Low risk</span>
+          </div>
+          <div class="deal-metrics">
+            <div><span>Est. yield</span><b>8.4%</b></div>
+            <div><span>Min. invest</span><b>$100</b></div>
+            <div><span>Term</span><b>3 yrs</b></div>
+          </div>
+          <div class="deal-bar"><i data-target="74"></i></div>
+          <div class="deal-foot"><span><span class="count-num" data-target="74" data-decimals="0" data-suffix="">0</span>% funded</span><a href="#">View AI analysis →</a></div>
+        </div>
+      </div>
+      <div class="deal-card">
+        <svg class="deal-panel" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="150" fill="#12181F"/>
+          <g stroke="#EDE9DD" stroke-width="0.5" opacity="0.08">
+            <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="50" x2="400" y2="50"/>
+            <line x1="0" y1="80" x2="400" y2="80"/><line x1="0" y1="110" x2="400" y2="110"/>
+            <line x1="0" y1="140" x2="400" y2="140"/>
+            <line x1="230" y1="0" x2="230" y2="150"/>
+          </g>
+          <rect class="scan-line" x="0" y="18" width="400" height="1" fill="#3F8C77" opacity="0.35"/>
+          <text x="18" y="26" class="fig-label" fill="#9CA3AC">FIG.02 — CASH FLOW FORECAST</text>
+          <polyline class="spark-line" points="18,98 58,102 98,88 138,94 178,72 218,76" stroke="#3F8C77"/>
+          <circle class="spark-dot" cx="218" cy="76" r="3.5" fill="#3F8C77"/>
+          <line x1="230" y1="0" x2="230" y2="150" stroke="#EDE9DD" opacity="0.12"/>
+          <circle cx="315" cy="80" r="38" fill="none" stroke="#EDE9DD" stroke-opacity="0.12" stroke-width="5"/>
+          <circle class="gauge-ring" data-pct="47" cx="315" cy="80" r="38" stroke="#3F8C77" stroke-dasharray="238.8" stroke-dashoffset="238.8" transform="rotate(-90 315 80)"/>
+          <text x="315" y="78" text-anchor="middle" class="gauge-num count-num" data-target="7.1" data-decimals="1" data-suffix="%" fill="#EDE9DD" font-size="19">0%</text>
+          <text x="315" y="94" text-anchor="middle" class="gauge-cap" fill="#9CA3AC">EST. YIELD</text>
+          <circle class="live-dot" cx="380" cy="20" r="4" fill="#3F8C77"/>
+          <text x="371" y="24" text-anchor="end" class="fig-label" fill="#3F8C77">FUNDING</text>
+        </svg>
+        <div class="deal-body">
+          <div class="deal-top">
+            <div><div class="deal-loc">DENVER, CO · RESIDENTIAL</div><div class="deal-name">Larimer Row</div></div>
+            <span class="deal-badge">Low risk</span>
+          </div>
+          <div class="deal-metrics">
+            <div><span>Est. yield</span><b>7.1%</b></div>
+            <div><span>Min. invest</span><b>$100</b></div>
+            <div><span>Term</span><b>2 yrs</b></div>
+          </div>
+          <div class="deal-bar"><i data-target="41"></i></div>
+          <div class="deal-foot"><span><span class="count-num" data-target="41" data-decimals="0" data-suffix="">0</span>% funded</span><a href="#">View AI analysis →</a></div>
+        </div>
+      </div>
+      <div class="deal-card">
+        <svg class="deal-panel" viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="150" fill="#12181F"/>
+          <g stroke="#EDE9DD" stroke-width="0.5" opacity="0.08">
+            <line x1="0" y1="20" x2="400" y2="20"/><line x1="0" y1="50" x2="400" y2="50"/>
+            <line x1="0" y1="80" x2="400" y2="80"/><line x1="0" y1="110" x2="400" y2="110"/>
+            <line x1="0" y1="140" x2="400" y2="140"/>
+            <line x1="230" y1="0" x2="230" y2="150"/>
+          </g>
+          <rect class="scan-line" x="0" y="18" width="400" height="1" fill="#C4694F" opacity="0.35"/>
+          <text x="18" y="26" class="fig-label" fill="#9CA3AC">FIG.03 — CASH FLOW FORECAST</text>
+          <polyline class="spark-line" points="18,120 58,108 98,110 138,80 178,64 218,40" stroke="#C4694F"/>
+          <circle class="spark-dot" cx="218" cy="40" r="3.5" fill="#C4694F"/>
+          <line x1="230" y1="0" x2="230" y2="150" stroke="#EDE9DD" opacity="0.12"/>
+          <circle cx="315" cy="80" r="38" fill="none" stroke="#EDE9DD" stroke-opacity="0.12" stroke-width="5"/>
+          <circle class="gauge-ring" data-pct="75" cx="315" cy="80" r="38" stroke="#C4694F" stroke-dasharray="238.8" stroke-dashoffset="238.8" transform="rotate(-90 315 80)"/>
+          <text x="315" y="78" text-anchor="middle" class="gauge-num count-num" data-target="11.2" data-decimals="1" data-suffix="%" fill="#EDE9DD" font-size="19">0%</text>
+          <text x="315" y="94" text-anchor="middle" class="gauge-cap" fill="#9CA3AC">EST. YIELD</text>
+          <circle class="live-dot" cx="380" cy="20" r="4" fill="#C4694F"/>
+          <text x="371" y="24" text-anchor="end" class="fig-label" fill="#C4694F">WATCH</text>
+        </svg>
+        <div class="deal-body">
+          <div class="deal-top">
+            <div><div class="deal-loc">CHARLOTTE, NC · INDUSTRIAL</div><div class="deal-name">Steele Creek Logistics</div></div>
+            <span class="deal-badge risk">Watch</span>
+          </div>
+          <div class="deal-metrics">
+            <div><span>Est. yield</span><b>11.2%</b></div>
+            <div><span>Min. invest</span><b>$250</b></div>
+            <div><span>Term</span><b>4 yrs</b></div>
+          </div>
+          <div class="deal-bar"><i data-target="18"></i></div>
+          <div class="deal-foot"><span><span class="count-num" data-target="18" data-decimals="0" data-suffix="">0</span>% funded</span><a href="#">View AI analysis →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust on-dark" id="trust">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Trust and compliance</div>
+      <h2>Built to satisfy regulators, not just investors</h2>
+      <p>Every dollar and every document is accounted for before it ever reaches a listing.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item"><h4>Identity verification</h4><p>KYC/AML checks on every investor and developer before onboarding completes.</p></div>
+      <div class="trust-item"><h4>Segregated custody</h4><p>Investor funds held with a regulated custodian, separate from operating capital.</p></div>
+      <div class="trust-item"><h4>Reviewed listings only</h4><p>Admin compliance sign-off required before any project reaches investors.</p></div>
+      <div class="trust-item"><h4>Audit-ready reporting</h4><p>Exportable investment and compliance reports for regulators and auditors.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="people">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Everyday investors</div>
+      <h2>Built for people, not just portfolios</h2>
+      <p>You don't need to be a property expert or a millionaire to start. Here's how people are actually using Vestara.</p>
+    </div>
+    <div class="people-grid">
+      <div class="people-card">
+        <div class="people-quote">"I put in $200 on my lunch break and actually understood what I was investing in, thanks to the AI summary."</div>
+        <div class="people-who"><div class="people-avatar">JM</div><div><b>Jordan M.</b><span>Teacher, first-time investor</span></div></div>
+      </div>
+      <div class="people-card">
+        <div class="people-quote">"The portfolio advisor caught that I was too concentrated in one city before I even noticed it myself."</div>
+        <div class="people-who"><div class="people-avatar">PR</div><div><b>Priya R.</b><span>Software engineer</span></div></div>
+      </div>
+      <div class="people-card">
+        <div class="people-quote">"Watching the construction updates roll in every month makes it feel real, not just a number in an app."</div>
+        <div class="people-who"><div class="people-avatar">DT</div><div><b>Daniel T.</b><span>Retired, income investor</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h2>Ready to build wealth on Vestara?</h2>
+        <p>Whichever side of the deal you're on, your workspace is ready. Sign up in minutes.</p>
+      </div>
+      <div class="cta-paths">
+        <a class="cta-path" href="#"><div><b>I'm investing</b><span>Browse projects from $100</span></div><span>→</span></a>
+        <a class="cta-path" href="#"><div><b>I'm developing</b><span>List your project</span></div><span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="logo" style="color:var(--ink-text);">
+        <svg class="mark" viewBox="0 0 26 26" fill="none"><rect x="1" y="14" width="5" height="11" fill="#AD8A50"/><rect x="10.5" y="8" width="5" height="17" fill="#EDE9DD"/><rect x="20" y="1" width="5" height="24" fill="#AD8A50"/></svg>
+        Vestara
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h5>Platform</h5>
+          <a href="#deals">Browse projects</a>
+          <a href="#developers">List a project</a>
+          <a href="#ai-suite">AI suite</a>
+        </div>
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="#">About</a>
+          <a href="#">Careers</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="foot-col">
+          <h5>Legal</h5>
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Risk disclosures</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Vestara, Inc. All investments carry risk, including loss of principal.</span>
+      <span>Securities offered in reliance on exemptions from registration.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var deals = [
+    { name:"Rainey Fields", loc:"Austin, TX", yield:"8.4%", status:"74% funded" },
+    { name:"Larimer Row", loc:"Denver, CO", yield:"7.1%", status:"41% funded" },
+    { name:"Steele Creek Logistics", loc:"Charlotte, NC", yield:"11.2%", status:"18% funded" },
+    { name:"Harbor Point Residences", loc:"Tampa, FL", yield:"6.9%", status:"funding now" },
+    { name:"Union Yards", loc:"Nashville, TN", yield:"9.6%", status:"new listing" }
+  ];
+  var track = document.getElementById('tickerTrack');
+  var html = "";
+  for (var r=0; r<2; r++){
+    deals.forEach(function(d){
+      html += "<span>" + d.name + " · " + d.loc + " — <b>" + d.yield + " est. yield</b> — " + d.status + "</span>";
+    });
+  }
+  track.innerHTML = html;
+
+  var tabs = document.querySelectorAll('.role-tab');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.role-panel').forEach(function(p){ p.classList.remove('active'); });
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.role).classList.add('active');
+    });
+  });
+
+  function animateCount(el, duration){
+    var target = parseFloat(el.dataset.target);
+    var decimals = parseInt(el.dataset.decimals || "0", 10);
+    var suffix = el.dataset.suffix !== undefined ? el.dataset.suffix : "";
+    var start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var value = target * eased;
+      el.textContent = value.toFixed(decimals) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target.toFixed(decimals) + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+
+  var dealCards = document.querySelectorAll('.deal-card');
+  if ('IntersectionObserver' in window){
+    var dealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (!entry.isIntersecting) return;
+        var card = entry.target;
+        card.querySelectorAll('.count-num').forEach(function(el){ animateCount(el, 1300); });
+        var bar = card.querySelector('.deal-bar i');
+        if (bar) bar.style.width = bar.dataset.target + '%';
+        var ring = card.querySelector('.gauge-ring');
+        if (ring){
+          var pct = parseFloat(ring.dataset.pct);
+          var c = 238.8;
+          ring.style.strokeDashoffset = (c - (c * pct / 100)) + 'px';
+        }
+        var spark = card.querySelector('.spark-line');
+        if (spark) spark.style.strokeDashoffset = '0';
+        var dot = card.querySelector('.spark-dot');
+        if (dot){ dot.style.opacity = '1'; }
+        dealObserver.unobserve(card);
+      });
+    }, { threshold: 0.35 });
+    dealCards.forEach(function(card){ dealObserver.observe(card); });
+  } else {
+    dealCards.forEach(function(card){
+      card.querySelectorAll('.count-num').forEach(function(el){ el.textContent = parseFloat(el.dataset.target).toFixed(parseInt(el.dataset.decimals||"0",10)) + (el.dataset.suffix||""); });
+      var bar = card.querySelector('.deal-bar i');
+      if (bar) bar.style.width = bar.dataset.target + '%';
+    });
+  }
+</script>
+
+</body>
+</html>

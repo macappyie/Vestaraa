@@ -21,20 +21,11 @@ def decimal_default(obj):
 
 def lambda_handler(event, context):
     try:
-        # DISTINCT ON (title, location) removes duplicate deal rows (e.g. from
-        # seed data run twice) while still keeping the most recently created
-        # row per unique deal, then re-sorts the deduped set by newest first.
         sql = """
             SELECT id, title, location, property_type, est_yield,
                    funding_goal, funding_raised, term_years, status
-            FROM (
-                SELECT DISTINCT ON (title, location)
-                       id, title, location, property_type, est_yield,
-                       funding_goal, funding_raised, term_years, status, created_at
-                FROM deals
-                WHERE status = 'active'
-                ORDER BY title, location, created_at DESC
-            ) unique_deals
+            FROM deals
+            WHERE status = 'active'
             ORDER BY created_at DESC;
         """
 
